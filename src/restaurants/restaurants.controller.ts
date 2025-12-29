@@ -34,14 +34,28 @@ export class RestaurantsController {
     return r;
   }
 
-
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Post()
   async create(@Req() req: any, @Body() dto: CreateRestaurantDto) {
+    // ✅ если уже привязан — не даём создать ещё один
+    if (req.user.restaurantId) {
+      return this.restaurants.findOne(req.user.restaurantId);
+      // либо throw new ForbiddenException('Ресторан уже создан');
+    }
+
     const restaurant = await this.restaurants.create(dto);
     await this.users.attachRestaurant(req.user.userId, restaurant.id);
     return restaurant;
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Get('my')
+  async my(@Req() req: any) {
+    const rid = req.user.restaurantId ?? null;
+    if (!rid) return null;
+    return this.restaurants.findOne(rid);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
