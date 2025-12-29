@@ -23,7 +23,6 @@ export class RestaurantsController {
     private users: UsersService,
   ) {}
 
-  // клиент видит все рестораны для карты
   @Get()
   findAll() {
     return this.restaurants.findAll();
@@ -35,7 +34,7 @@ export class RestaurantsController {
     return r;
   }
 
-  // админ создаёт ресторан (после логина) и привязывается к нему
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Post()

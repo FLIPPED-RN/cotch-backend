@@ -25,7 +25,6 @@ import { GeoModule } from './geo/geo.module';
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       entities: [User, Restaurant, MenuItem, Order, OrderItem],
-      synchronize: true,
     }),
     AuthModule,
     GeoModule,

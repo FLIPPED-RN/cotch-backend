@@ -16,12 +16,10 @@ export class RestaurantsService {
   ) {}
 
   async create(data: Partial<Restaurant>) {
-    // если передали address — пробуем получить координаты
     if (typeof data.address === 'string' && data.address.trim().length > 0) {
       const address = data.address.trim();
       const coords = await this.geoService.geocode(address);
 
-      // ✅ не пишем null, если геокодинг не нашёл координаты
       if (coords?.lat != null && coords?.lng != null) {
         data.lat = coords.lat;
         data.lng = coords.lng;
@@ -44,15 +42,12 @@ export class RestaurantsService {
     const r = await this.findOne(id);
     if (!r) throw new NotFoundException('Ресторан не найден');
 
-    // если меняем address — пересчитываем координаты
     if (typeof data.address === 'string' && data.address.trim().length > 0) {
       const newAddress = data.address.trim();
       const oldAddress = (r.address ?? '').trim();
 
       if (newAddress !== oldAddress) {
         const coords = await this.geoService.geocode(newAddress);
-
-        // ✅ не пишем null, если геокодинг не нашёл координаты
         if (coords?.lat != null && coords?.lng != null) {
           data.lat = coords.lat;
           data.lng = coords.lng;

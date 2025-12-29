@@ -26,16 +26,13 @@ export class GeoService {
       `&results=1`;
 
     console.log('[GEO] address:', query);
-    console.log('[GEO] url:', url.replace(apikey, '***')); // чтобы ключ не светить
+    console.log('[GEO] url:', url.replace(apikey, '***'));
 
-    // ⚠️ если у тебя Node < 18, fetch может отсутствовать
-    // тогда поставь: npm i node-fetch  и импортируй fetch
     const res = await fetch(url);
     console.log('[GEO] status:', res.status);
 
     const text = await res.text();
 
-    // логируем первые 400 символов ответа, чтобы увидеть ошибку/структуру
     console.log('[GEO] raw:', text.slice(0, 400));
 
     let data: any;
@@ -51,7 +48,6 @@ export class GeoService {
         ?.pos;
 
     if (!pos) {
-      // Иногда Яндекс кладёт ошибку сюда
       const msg =
         data?.message ||
         data?.error?.message ||
@@ -61,7 +57,6 @@ export class GeoService {
       return null;
     }
 
-    // pos приходит так: "20.509726 54.710217" (lng lat)
     const [lngStr, latStr] = pos.split(' ');
     const lng = Number(lngStr);
     const lat = Number(latStr);
